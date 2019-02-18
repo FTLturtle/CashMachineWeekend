@@ -4,6 +4,9 @@ package rocks.zipcode.atm.bank;
  * @author ZipCodeWilmington
  */
 public abstract class Account {
+    final double DOUBLE_COMPARISON_THRESHOLD = .001;
+    // threshold for comparing doubles. since all of the doubles use only two decimal places,
+    // the threshold has been set to + or - .001
 
     private AccountData accountData;
 
@@ -15,11 +18,13 @@ public abstract class Account {
         return accountData;
     }
 
-    public void deposit(int amount) {
+    public void deposit(double amount) {
+        amount = (double)Math.round(amount * 100d) / 100d; // rounding to two decimal places
         updateBalance(getBalance() + amount);
     }
 
-    public boolean withdraw(int amount) {
+    public boolean withdraw(double amount) {
+        amount = (double)Math.round(amount * 100d) / 100d; // rounding to two decimal places
         if (canWithdraw(amount)) {
             updateBalance(getBalance() - amount);
             return true;
@@ -28,16 +33,17 @@ public abstract class Account {
         }
     }
 
-    protected boolean canWithdraw(int amount) {
-        return getBalance() >= amount;
+    protected boolean canWithdraw(double amount) {
+        return (Math.abs(getBalance() - amount) < DOUBLE_COMPARISON_THRESHOLD);
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return accountData.getBalance();
     }
 
-    private void updateBalance(int newBalance) {
-        accountData = new AccountData(accountData.getId(), accountData.getName(), accountData.getEmail(),
-                newBalance);
+    private void updateBalance(double newBalance) {
+        double newBalanceRoundedToTwoDecimalPlaces = (double)Math.round(newBalance * 100d) / 100d; // rounding to two decimal places
+        accountData = new AccountData(accountData.getId(), accountData.getName(), accountData.getEmail(), newBalanceRoundedToTwoDecimalPlaces);
     }
 }
+

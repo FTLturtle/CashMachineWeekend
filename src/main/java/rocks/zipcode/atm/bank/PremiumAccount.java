@@ -5,14 +5,14 @@ package rocks.zipcode.atm.bank;
  */
 public class PremiumAccount extends Account {
 
-    private static final int OVERDRAFT_LIMIT = 100;
+    private static final double OVERDRAFT_LIMIT = 100.0;
 
     public PremiumAccount(AccountData accountData) {
         super(accountData);
     }
 
     @Override
-    protected boolean canWithdraw(int amount) {
-        return getBalance() + OVERDRAFT_LIMIT >= amount;
+    protected boolean canWithdraw(double amount) {
+        return (Math.abs(getBalance() + OVERDRAFT_LIMIT - amount) < DOUBLE_COMPARISON_THRESHOLD);
     }
 }
