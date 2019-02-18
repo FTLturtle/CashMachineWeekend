@@ -30,7 +30,58 @@ public class Bank {
         )));
 
     }
-    
+
+    /**
+     * Checks if the bank has an account that matches the id given
+     *
+     * @param id this is the account number to check if the bank has it
+     * @return true if bank contains that account, false otherwise
+     */
+    public boolean containsAccountWithGivenId(int id) {
+        return accounts.get(id) != null;
+    }
+
+    /**
+     * This method creates a new bank account in the bank. returns true if the account was successfully created, and
+     * false if the account was not created.
+     *
+     * @param accountType
+     * @param id
+     * @param name
+     * @param email
+     * @param balance
+     * @return true if account was created, false otherwise
+     */
+    public boolean createNewAccount(String accountType, int id, String name, String email, double balance){
+        boolean result;
+
+        balance = (double)Math.round(balance * 100d) / 100d; // rounding to two decimal places
+
+        if (accounts.get(id) != null){
+            result = false;
+        } else {
+            AccountData accountData = new AccountData(id, name, email, balance);
+
+            if (accountType.equals("basic")){
+                accounts.put(id, new BasicAccount(accountData));
+                result = true;
+            } else if (accountType.equals("premium")) {
+                accounts.put(id, new PremiumAccount(accountData));
+                result = true;
+            } else {
+                result = false;
+            }
+
+        }
+
+        return result;
+    }
+
+    /**
+     * This method returns a String list of all account ids currently in use at the bank
+     *
+     * @return a String list of all account ids currently in use at the bank
+     */
     public String listOfAllAccountIds(){
         StringBuilder listOfAllIds = new StringBuilder();
 
@@ -47,9 +98,10 @@ public class Bank {
         if (account != null) {
             return ActionResult.success(account.getAccountData());
         } else {
-            return ActionResult.fail("No account with id: " + id + "\nTry account 1000 or 2000");
+            return ActionResult.fail("No account with id: " + id);
         }
     }
+
 
     public ActionResult<AccountData> deposit(AccountData accountData, double amount) {
         amount = (double)Math.round(amount * 100d) / 100d;

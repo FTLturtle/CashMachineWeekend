@@ -34,6 +34,11 @@ public final class AccountData {
         return balance;
     }
 
+    /**
+     * returns the account data as a string. Includes a warning if the account is overdrawn.
+     *
+     * @return the account data as a string. Includes a warning if the account is overdrawn.
+     */
     @Override
     public String toString() {
         String accountData;
